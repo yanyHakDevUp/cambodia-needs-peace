@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>កម្ពុជាត្រូវការសន្តិភាព - CAMBODIA NEEDS PEACE</title>
-    <link rel="icon" href="peace2.jpg">
+    <link rel="icon" href="Flag_of_Cambodia.svg.png">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -244,6 +244,38 @@
 
         .final-quote { font-family: var(--font-khmer); font-size: 3.2rem; line-height: 1.5; color: #fff; margin-bottom: 20px; text-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
 
+        /* --- NEW: Section Background Style --- */
+        #sec-march {
+            background-image: url('img/peace2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        #sec-march::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85); /* Dark overlay to keep text readable */
+            z-index: 0;
+        }
+
+        #sec-march .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* TikTok Embed Centering */
+        .tiktok-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px auto;
+            max-width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -283,6 +315,28 @@
             </div>
         </section>
 
+        <!-- NEW SECTION: Prime Minister & March for Peace -->
+        <section id="sec-march">
+            <div class="container">
+                <span class="khmer-large">ដើរដើម្បីសន្តិភាព</span>
+                <h2>March for Peace</h2>
+                <p style="font-size: 1.3rem; color: var(--color-gold);">
+                    We express our deepest respect to our Prime Minister for leading the way towards a peaceful future for Cambodia.
+                </p>
+                
+                <div class="tiktok-wrapper">
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@dr.hunmanetofcambodia/video/7585618915225750804" data-video-id="7585618915225750804" style="max-width: 605px;min-width: 325px;" > 
+                        <section> 
+                            <a target="_blank" title="@dr.hunmanetofcambodia" href="https://www.tiktok.com/@dr.hunmanetofcambodia?refer=embed">@dr.hunmanetofcambodia</a> 
+                            <p>ដើរដើម្បីសន្តិភាព - March for Peace កម្ពុជាត្រូវការសន្តិភាព​ -​ Cambodia Needs Peace ផលិតដោយក្រុមការងារសហភាពសហព័ន្ធយុវជនកម្ពុជា #ហ៊ុនម៉ាណែត #Hunmanet #កម្ពុជា #Cambodia #សន្តិភាពនៅកម្ពុជា​ #Peaceincambodia</p> 
+                            <a target="_blank" title="♬ original sound  - Samdech Thipadei HUN MANET" href="https://www.tiktok.com/music/original-sound-Samdech-Thipadei-HUN-MANET-7585619185907583751?refer=embed">♬ original sound  - Samdech Thipadei HUN MANET</a> 
+                        </section> 
+                    </blockquote> 
+                    <script async src="https://www.tiktok.com/embed.js"></script> 
+                </div>
+            </div>
+        </section>
+
         <!-- Section 2: Peace (Monk) -->
         <section id="sec-peace">
             <div class="container">
@@ -307,7 +361,7 @@
             </div>
         </section>
 
-        <!-- Section 3: NEW SECTION - Military & RIP -->
+        <!-- Section 3: Honor & RIP -->
         <section id="sec-honor">
             <div class="container">
                 <span class="khmer-large">ការគោរពកងកម្លាំងប្រដាប់អាវុធ</span>
@@ -457,7 +511,7 @@
             for(let i=0; i<15; i++) createParticle(window.innerWidth/2, window.innerHeight/2, 'gold');
         });
 
-        // --- NEW: Military Honor Interaction ---
+        // --- Military Honor Interaction ---
         const honorBtn = document.getElementById('honor-btn');
         const ripContainer = document.getElementById('rip-container');
 
@@ -596,5 +650,4 @@
         }
     </script>
 </body>
-
 </html>
