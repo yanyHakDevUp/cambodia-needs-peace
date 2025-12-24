@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>កម្ពុជាត្រូវការសន្តិភាព - CAMBODIA NEEDS PEACE</title>
+    <link rel="icon" href="img/peace2.jpg">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Khmer:wght@100;400;700;900&family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-gold: #D4AF37;
+            --color-saffron: #FF9933;
+            --color-red: #8B0000;
+            --color-deep-blue: #020205;
+            --color-text: #F0F0F0;
+            --font-khmer: 'Noto Serif Khmer', serif;
+            --font-en: 'Cinzel', serif;
+            --font-body: 'Lato', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-deep-blue);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            cursor: none; 
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            body { cursor: auto; }
+            #cursor { display: none; }
+        }
+
+        /* --- Custom Cursor --- */
+        #cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--color-gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference;
+        }
+        
+        #cursor.hovered {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(212, 175, 55, 0.2);
+            border-color: transparent;
+        }
+
+        /* --- Preloader --- */
+        #intro-ritual {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 2s ease;
+        }
+
+        .dark-lantern {
+            width: 100px;
+            height: 140px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #111;
+            cursor: pointer;
+            box-shadow: 0 0 0px rgba(255, 165, 0, 0);
+            transition: all 1s ease;
+        }
+
+        .dark-lantern.unlit { filter: grayscale(100%); opacity: 0.6; }
+        .dark-lantern.lit { box-shadow: 0 0 100px var(--color-gold), 0 0 200px var(--color-saffron); border-color: var(--color-gold); filter: grayscale(0%); opacity: 1; }
+
+        .flame-spark {
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: -100px;
+            box-shadow: 0 0 20px var(--color-gold);
+            transition: top 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .intro-text { margin-top: 30px; font-family: var(--font-khmer); color: #666; font-size: 1.2rem; opacity: 0; transition: opacity 1s; text-align: center; }
+
+        /* --- Canvas Background --- */
+        #canvas-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+        /* --- Layout --- */
+        section {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 60px 20px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1.2s ease-out;
+        }
+
+        section.active { opacity: 1; transform: translateY(0); }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* --- Typography --- */
+        h1, h2 {
+            font-family: var(--font-en);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+        }
+
+        h1 { font-size: 2.8rem; background: linear-gradient(to bottom, #fff, #ccc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        h2 { color: var(--color-gold); font-size: 1.8rem; }
+
+        p { font-size: 1.15rem; line-height: 1.9; margin-bottom: 30px; font-weight: 300; color: rgba(255, 255, 255, 0.9); }
+
+        .khmer-large {
+            font-family: var(--font-khmer);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-saffron);
+            display: block;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        /* --- RIP Message Specific Style --- */
+        .rip-message {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid var(--color-gold);
+            background: rgba(0,0,0,0.6);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 1s ease;
+        }
+
+        .rip-message.visible {
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 0 30px rgba(139, 0, 0, 0.3); /* Subtle red glow for RIP */
+            border-color: var(--color-red);
+        }
+
+        .rip-message h3 {
+            font-family: var(--font-khmer);
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .rip-message p {
+            margin: 0;
+            font-style: italic;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        /* --- Image Frames --- */
+        .khmer-frame {
+            position: relative;
+            display: inline-block;
+            padding: 10px;
+            border: 1px solid var(--color-gold);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            margin: 25px 0;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+            transition: transform 0.6s ease, border-color 0.3s;
+            max-width: 100%;
+        }
+
+        .khmer-frame:hover { transform: scale(1.03); border-color: #fff; box-shadow: 0 0 30px rgba(212, 175, 55, 0.3); }
+        .khmer-frame img { max-width: 100%; max-height: 60vh; display: block; object-fit: cover; }
+        .frame-caption { position: absolute; bottom: -35px; left: 0; width: 100%; font-family: var(--font-khmer); color: #888; font-size: 0.9rem; text-align: center; }
+
+        /* --- Interactive Elements --- */
+        .btn {
+            background: transparent;
+            border: 1px solid var(--color-gold);
+            color: var(--color-gold);
+            padding: 12px 35px;
+            font-family: var(--font-en);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: inline-block;
+        }
+
+        .btn:hover { background: var(--color-gold); color: #000; box-shadow: 0 0 15px var(--color-gold); }
+        
+        .hidden { display: none; }
+
+        /* --- Video & Candle (Reused styles) --- */
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border: 1px solid var(--color-gold); background: #000; box-shadow: 0 0 50px rgba(0,0,0,0.8); margin: 20px 0; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        .peace-candle-container { position: relative; width: 80px; height: 150px; margin: 0 auto 30px auto; cursor: pointer; }
+        .candle-body { width: 100%; height: 100%; background: linear-gradient(to right, #e0e0e0, #ffffff, #e0e0e0); border-radius: 4px; position: absolute; bottom: 0; }
+        .flame { width: 25px; height: 50px; background: radial-gradient(ellipse at bottom, #fff 0%, #ffcc00 40%, #ff6600 100%); border-radius: 50% 50% 20% 20%; position: absolute; top: -45px; left: 50%; transform: translateX(-50%); box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.4); animation: flicker 0.1s infinite alternate; transform-origin: center bottom; }
+        @keyframes flicker { 0% { transform: translateX(-50%) scale(1.0) rotate(-2deg); opacity: 0.9; } 100% { transform: translateX(-50%) scale(1.05) rotate(2deg); opacity: 1; } }
+
+        .final-quote { font-family: var(--font-khmer); font-size: 3.2rem; line-height: 1.5; color: #fff; margin-bottom: 20px; text-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+
+    </style>
+</head>
+<body>
+
+    <div id="cursor"></div>
+
+    <div id="intro-ritual">
+        <div class="flame-spark" id="spark"></div>
+        <div class="dark-lantern unlit" id="intro-lantern">
+            <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l-6 6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8l-6-6z"></path></svg>
+        </div>
+        <div class="intro-text" id="intro-msg">
+            ចុចដើម្បីដាក់ចង្កៀង និងបើកផ្លូវសុខសន្តិភាព<br>
+            <span style="font-size: 0.8rem; font-family: var(--font-body); color: #444;">Click to light lantern & open path of peace</span>
+        </div>
+    </div>
+
+    <canvas id="canvas-bg"></canvas>
+
+    <main>
+        <!-- Section 1: Identity & Flag -->
+        <section id="sec-identity">
+            <div class="container">
+                <span class="khmer-large">ស្នាមស្នាព្រះហស្ថជាតិ</span>
+                <h1>The Soul of a Nation</h1>
+                <div class="khmer-frame" id="frame-flag">
+                    <img src="https://z-cdn-media.chatglm.cn/files/90820019-88e2-422d-907e-d1bc403172b4.png?auth_key=1866509921-83010def8abf4f3086df17740d2b8fdf-0-c0b18249db6e5821b45645717a214c30" alt="Cambodia Flag">
+                    <div class="frame-caption">អត្តសញ្ញាណជាតិខ្មែរ - Our National Identity</div>
+                </div>
+                <p>
+                    To the world, we show our colors: Blue for Royalty, Red for Nation, and White for our Faith.<br>
+                    We stand tall, united, and deeply proud of our heritage.
+                </p>
+                <p style="font-family: var(--font-khmer); color: var(--color-gold);">
+                    "កម្ពុជាស្រឡាញ់សិទ្ធិឯករាជ្យ កម្ពុជាស្រឡាញ់សុខសន្តិភាព"
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: Peace (Monk) -->
+        <section id="sec-peace">
+            <div class="container">
+                <span class="khmer-large">សិល្បៈនៃការអធិស្ឋាន</span>
+                <h2>We Pray for Peace</h2>
+                <div class="khmer-frame">
+                    <img src="img/peace1.jpg" alt="Monk Praying for Peace">
+                    <div class="frame-caption">សេចក្តីស្ងប់ - Inner Peace</div>
+                </div>
+                <p>
+                    Cambodia is a land of beauty, wisdom, and peace. <br>
+                    We do not desire conflict. We pray for safety of our borders and the harmony of world.
+                </p>
+                <div class="peace-candle-container" id="candle-interact">
+                    <div class="flame"></div>
+                    <div class="candle-body"></div>
+                </div>
+                <p id="candle-msg" style="opacity: 0; transition: opacity 1s; color: var(--color-gold);">
+                    <span style="font-family: var(--font-khmer);">យើងប្រាថ្នាចង់ឃើញតែសុខភាព មិនចង់ឃើញសង្គ្រាម</span><br>
+                    <small>We wish to see only health, not war.</small>
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 3: NEW SECTION - Military & RIP -->
+        <section id="sec-honor">
+            <div class="container">
+                <span class="khmer-large">ការគោរពកងកម្លាំងប្រដាប់អាវុធ</span>
+                <h2>Honor & Sacrifice</h2>
+                
+                <!-- Image of Soldier -->
+                <div class="khmer-frame" style="border-color: #555;">
+                    <img src="img/peace4.jpg" alt="Soldier Silhouette">
+                    <div class="frame-caption">ការការពារជាតិ - Protecting Nation</div>
+                </div>
+
+                <p>
+                    We are forever proud of our Cambodian military who protect our homeland.<br>
+                    Their bravery ensures that we can sleep safely at night.
+                </p>
+
+                <!-- Interaction Button -->
+                <button class="btn" id="honor-btn" style="border-color: var(--color-red); color: var(--color-red);">
+                    Pay Respects / ឧទ្ទិសការគោរព
+                </button>
+
+                <!-- RIP Message (Hidden by default) -->
+                <div id="rip-container" class="rip-message">
+                    <h3>R.I.P</h3>
+                    <p>To those who gave their lives for Cambodia.</p>
+                    <p style="font-family: var(--font-khmer); color: var(--color-gold); margin-top: 10px;">
+                        សូមឱ្យវិញ្ញាណក្ខន្ធរបស់ពួកគេស្ងប់ក្នុងឋានសួគ៌
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Hope (Angkor) -->
+        <section id="sec-hope">
+            <div class="container">
+                <span class="khmer-large">ពួកយើងចង់ត្រឡប់ទៅសាលា</span>
+                <h2>We want to go back to school</h2>
+                <div class="khmer-frame">
+                    <img src="img/peace3.jpg" alt="Angkor Wat Sunrise">
+                </div>
+                <p>
+                    ពួកយើងចង់ត្រឡប់ទៅសាលា ពួកយើងនឹកមិត្តភក្តិ នឹកលោកគ្រូអ្នកគ្រូ<br>
+                    ពួកយើងគ្រាន់ជាក្មេងដែលចង់នៅជុំគ្រួសារបានទៅរៀនទទួលបានចំណេះ
+                </p>
+                <button class="btn" id="proud-btn">I Stand with Cambodia</button>
+                <p id="proud-response" style="margin-top:20px; color: var(--color-saffron); opacity: 0; font-family: var(--font-khmer); font-size: 1.2rem;">
+                    អរគុណចំពោះការគាំទ្រសុខសន្តិភាព
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 5: Music -->
+        <section id="sec-music">
+            <div class="container">
+                <span class="khmer-large">សំឡេងខ្មែរ</span>
+                <h2>CAMBODIA, I HEAR YOU CALLING</h2>
+                <p>A song that touches the soul of every Khmer person.</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/pDQVrm4rCFU?list=RDpDQVrm4rCFU" title="CAMBODIA, I HEAR YOU CALLING" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: #aaa;">
+                    Through this music, we share our culture and our love for peace with the world.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 6: Final -->
+        <section id="sec-final">
+            <div class="container">
+                <h1 style="font-size: 1.8rem; letter-spacing: 2px;">A Christmas Message to the World</h1>
+                <div class="final-quote">
+                    សុខសន្តិភាពគឺជាអំណោយដ៏ថ្លៃថ្នូរបំផុត
+                </div>
+                <h2 style="font-size: 1.2rem; margin-bottom: 0; color: #fff;">Peace is only gift we desire.</h2>
+                <div style="margin-top: 60px; opacity: 0.6; font-family: var(--font-khmer); font-size: 1.1rem;">
+                    ពរជាថ្ងៃណូអែលដ៏ស្ងប់ស្ងាត់ និងពេញដោយសេចក្តីស្រឡាញ់
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        const interactiveElements = document.querySelectorAll('button, .peace-candle-container, .dark-lantern, .khmer-frame');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // --- Intro Ritual ---
+        const lantern = document.getElementById('intro-lantern');
+        const spark = document.getElementById('spark');
+        const introMsg = document.getElementById('intro-msg');
+        const introRitual = document.getElementById('intro-ritual');
+
+        lantern.addEventListener('click', () => {
+            spark.style.top = '50%';
+            spark.style.left = '50%';
+            setTimeout(() => {
+                lantern.classList.remove('unlit');
+                lantern.classList.add('lit');
+                introMsg.style.opacity = '1';
+                setTimeout(() => {
+                    introRitual.style.opacity = '0';
+                    setTimeout(() => {
+                        introRitual.style.display = 'none';
+                        revealSection(document.getElementById('sec-identity'));
+                    }, 2000);
+                }, 1500);
+            }, 1000);
+        });
+
+        // --- Scroll Observer ---
+        const observerOptions = { threshold: 0.3 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    if(entry.target.id === 'sec-peace') playSound('wind');
+                    if(entry.target.id === 'sec-final') playSound('bells');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => { observer.observe(section); });
+
+        function revealSection(el) { el.classList.add('active'); }
+
+        // --- Candle Interaction (Peace) ---
+        const candle = document.getElementById('candle-interact');
+        const candleMsg = document.getElementById('candle-msg');
+        candle.addEventListener('click', () => {
+            const flame = candle.querySelector('.flame');
+            flame.style.transform = "translateX(-50%) scale(1.5)";
+            flame.style.filter = "brightness(1.5)";
+            setTimeout(() => {
+                flame.style.transform = "translateX(-50%) scale(1)";
+                flame.style.filter = "brightness(1)";
+            }, 300);
+            candleMsg.style.opacity = '1';
+            for(let i=0; i<15; i++) createParticle(window.innerWidth/2, window.innerHeight/2, 'gold');
+        });
+
+        // --- NEW: Military Honor Interaction ---
+        const honorBtn = document.getElementById('honor-btn');
+        const ripContainer = document.getElementById('rip-container');
+
+        honorBtn.addEventListener('click', () => {
+            honorBtn.style.display = 'none';
+            ripContainer.classList.add('visible');
+            
+            // Play solemn sound
+            playSound('drum');
+            
+            // Spawn white/grey particles (ash/flowers)
+            for(let i=0; i<30; i++) {
+                createParticle(window.innerWidth/2, window.innerHeight/2, 'grey');
+            }
+        });
+
+        // --- Proud Button ---
+        const proudBtn = document.getElementById('proud-btn');
+        const proudResponse = document.getElementById('proud-response');
+        proudBtn.addEventListener('click', () => {
+            proudBtn.style.display = 'none';
+            proudResponse.style.opacity = '1';
+            for(let i=0; i<40; i++) {
+                createParticle(window.innerWidth/2, window.innerHeight/2, 'gold');
+            }
+        });
+
+        // --- Canvas Background ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor(x, y, type) {
+                this.x = x || Math.random() * width;
+                this.y = y || Math.random() * height;
+                this.type = type || (Math.random() > 0.85 ? 'gold' : 'snow');
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = Math.random() * 1 + 0.2;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.y > height) this.y = -10;
+                if (this.x > width) this.x = 0;
+                if (this.x < 0) this.x = width;
+            }
+
+            draw() {
+                if (this.opacity <= 0) return;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                if (this.type === 'snow') ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                else if (this.type === 'gold') ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+                else if (this.type === 'grey') ctx.fillStyle = `rgba(150, 150, 150, ${this.opacity})`; // For RIP section
+                ctx.fill();
+            }
+        }
+
+        function createParticle(x, y, type) {
+            particles.push(new Particle(x, y, type));
+        }
+
+        function initParticles() {
+            for (let i = 0; i < 120; i++) particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            let gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, '#020205');
+            gradient.addColorStop(1, '#050510');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if (p.opacity <= 0) particles.splice(index, 1);
+            });
+
+            while(particles.length < 120) particles.push(new Particle());
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        // --- Audio Synth ---
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'wind') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 2);
+                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 3);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 3);
+            } else if (type === 'bells') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 2);
+            } else if (type === 'drum') {
+                // Solemn drum beat for RIP
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(60, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 1.5);
+            }
+        }
+    </script>
+</body>
+</html>
